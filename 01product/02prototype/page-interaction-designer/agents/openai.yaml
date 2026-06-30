@@ -1,0 +1,4 @@
+interface:
+  display_name: "页面交互设计师"
+  short_description: "用可视化方案确认页面交互，并输出页面交互细节文档。"
+  default_prompt: "基于已确认的需求文档和功能清单，帮我逐页可视化确认交互方式，并输出页面交互细节文档。"

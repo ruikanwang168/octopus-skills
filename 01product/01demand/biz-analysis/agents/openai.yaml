@@ -1,0 +1,4 @@
+interface:
+  display_name: "Business Analysis"
+  short_description: "通过连续追问梳理业务需求并生成结构化文档与风险清单"
+  default_prompt: "Use $biz-analysis to clarify my business system idea and generate a structured requirements discovery document."
