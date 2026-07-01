@@ -36,7 +36,22 @@ scripts/start-server.sh --project-dir /path/to/project --open
 - `form-flow.html`
 - `state-model.html`
 
-每屏最多 2-3 个方案，复杂时最多 4 个。
+每屏最多 2-3 个方案，复杂时最多 4 个。方案页默认使用“先选择，后确认”的交互：`data-choice` 只负责选中和高亮，`data-confirm-choice` 才提交事件让 AI 继续。
+
+标准确认区：
+
+```html
+<div class="confirm-bar">
+  <div class="confirm-hint" data-selection-label>请选择一个方案后确认</div>
+  <button class="confirm-button" data-confirm-choice disabled>确认选择</button>
+</div>
+```
+
+如果需要让用户补充修改意见，可在确认区前加入：
+
+```html
+<textarea class="choice-note" data-choice-note placeholder="可选：补充你想调整的地方"></textarea>
+```
 
 ## 推荐屏幕类型
 
@@ -74,7 +89,7 @@ scripts/start-server.sh --project-dir /path/to/project --open
 
 ## 读取反馈
 
-用户点击会记录到：
+用户点击确认后会记录到：
 
 ```text
 $STATE_DIR/events
@@ -83,13 +98,13 @@ $STATE_DIR/events
 事件是 JSON lines：
 
 ```jsonl
-{"type":"click","choice":"stage-first","text":"阶段分栏 ...","timestamp":1706000101}
+{"type":"confirm","choice":"stage-first","text":"阶段分栏 ...","note":"补充意见","timestamp":1706000101}
 ```
 
 读取事件后，结合用户终端回复判断：
 
-- 最后一次点击通常是最终选择
-- 连续点击多个方案说明用户可能犹豫
+- 最后一次确认通常是最终选择
+- 用户未确认前可以反复切换方案，AI 不应继续
 - 用户文字反馈优先级高于点击事件
 
 优先用等待脚本减少用户来回切换：
@@ -98,7 +113,7 @@ $STATE_DIR/events
 scripts/wait-for-choice.sh "$STATE_DIR" --timeout-seconds 900 --settle-seconds 1
 ```
 
-脚本输出最新事件后，直接根据 `choice` 或 `value` 继续下一步。只有在等待超时、环境不支持长时间运行命令，或需要用户补充文字原因时，才让用户回到 AI 聊天窗口。
+脚本输出最新确认事件后，直接根据 `choice`、`value` 和 `note` 继续下一步。只有在等待超时、环境不支持长时间运行命令，或需要用户补充复杂文字原因时，才让用户回到 AI 聊天窗口。
 
 ## 回到终端
 

@@ -126,22 +126,97 @@
     }
   }
 
+  function pageRequiresConfirm() {
+    return Boolean(document.querySelector('[data-confirm-choice], [data-confirm]'));
+  }
+
+  function choiceText(el) {
+    const explicit = el.dataset.choiceLabel || el.getAttribute('aria-label');
+    return (explicit || el.textContent || '').trim();
+  }
+
+  function currentChoicePayload() {
+    const details = window.selectedChoiceDetails || [];
+    const noteEl = document.querySelector('[data-choice-note]');
+    const note = noteEl ? String(noteEl.value || '').trim() : '';
+    return {
+      type: 'confirm',
+      choice: window.selectedChoice || null,
+      value: window.selectedChoice || null,
+      text: window.selectedChoiceText || '',
+      id: window.selectedChoiceId || null,
+      choices: details,
+      note: note || null
+    };
+  }
+
+  function setConfirmMessage(message, state) {
+    const el = document.querySelector('[data-selection-label]');
+    if (!el) return;
+    el.textContent = message;
+    el.dataset.state = state || '';
+  }
+
+  function updateConfirmControls() {
+    const buttons = document.querySelectorAll('[data-confirm-choice], [data-confirm]');
+    if (!buttons.length) return;
+
+    const hasChoice = Boolean(window.selectedChoice);
+    buttons.forEach(button => {
+      button.disabled = !hasChoice;
+      button.setAttribute('aria-disabled', hasChoice ? 'false' : 'true');
+    });
+
+    if (hasChoice) {
+      setConfirmMessage('已选择：' + (window.selectedChoiceText || window.selectedChoice), 'ready');
+    } else {
+      setConfirmMessage('请选择一个方案后确认', 'empty');
+    }
+  }
+
   // Capture clicks on choice elements
   document.addEventListener('click', (e) => {
+    const confirmTarget = e.target.closest('[data-confirm-choice], [data-confirm]');
+    if (confirmTarget) {
+      e.preventDefault();
+      if (!window.selectedChoice) {
+        updateConfirmControls();
+        return;
+      }
+      sendEvent(currentChoicePayload());
+      confirmTarget.classList.add('confirmed');
+      confirmTarget.textContent = confirmTarget.dataset.confirmedText || '已确认';
+      confirmTarget.disabled = true;
+      confirmTarget.setAttribute('aria-disabled', 'true');
+      setConfirmMessage('已确认，AI 正在继续...', 'confirmed');
+      return;
+    }
+
     const target = e.target.closest('[data-choice]');
     if (!target) return;
 
-    sendEvent({
+    const handledAt = Number(target.dataset.selectionHandledAt || 0);
+    if (!handledAt || Date.now() - handledAt > 100) {
+      window.toggleSelect(target);
+    }
+
+    if (pageRequiresConfirm()) return;
+
+    const payload = {
       type: 'click',
-      text: target.textContent.trim(),
+      text: choiceText(target),
       choice: target.dataset.choice,
       id: target.id || null
-    });
+    };
+    sendEvent(payload);
 
   });
 
   // Frame UI: selection tracking
   window.selectedChoice = null;
+  window.selectedChoiceText = '';
+  window.selectedChoiceId = null;
+  window.selectedChoiceDetails = [];
 
   window.toggleSelect = function(el) {
     const container = el.closest('.options') || el.closest('.cards');
@@ -154,13 +229,41 @@
     } else {
       el.classList.add('selected');
     }
-    window.selectedChoice = el.dataset.choice;
+
+    const selected = container
+      ? Array.from(container.querySelectorAll('[data-choice].selected'))
+      : (el.classList.contains('selected') ? [el] : []);
+    window.selectedChoiceDetails = selected.map(item => ({
+      choice: item.dataset.choice,
+      text: choiceText(item),
+      id: item.id || null
+    }));
+    window.selectedChoice = multi
+      ? window.selectedChoiceDetails.map(item => item.choice).join(',')
+      : (window.selectedChoiceDetails[0] && window.selectedChoiceDetails[0].choice) || null;
+    window.selectedChoiceText = multi
+      ? window.selectedChoiceDetails.map(item => item.text).join('\n')
+      : (window.selectedChoiceDetails[0] && window.selectedChoiceDetails[0].text) || '';
+    window.selectedChoiceId = multi
+      ? null
+      : (window.selectedChoiceDetails[0] && window.selectedChoiceDetails[0].id) || null;
+    el.dataset.selectionHandledAt = String(Date.now());
+    updateConfirmControls();
   };
+
+  document.addEventListener('DOMContentLoaded', updateConfirmControls);
 
   // Expose API for explicit use
   window.brainstorm = {
     send: sendEvent,
-    choice: (value, metadata = {}) => sendEvent({ type: 'choice', value, ...metadata })
+    choice: (value, metadata = {}) => sendEvent({ type: 'choice', value, ...metadata }),
+    confirmChoice: () => {
+      if (!window.selectedChoice) {
+        updateConfirmControls();
+        return;
+      }
+      sendEvent(currentChoicePayload());
+    }
   };
 
   connect();

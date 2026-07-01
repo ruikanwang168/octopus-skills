@@ -205,6 +205,61 @@
     .mock-content { padding: 1.5rem; flex: 1; }
     .mock-button { background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; }
     .mock-input { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; width: 100%; }
+
+    /* ===== CONFIRM BAR ===== */
+    .confirm-bar {
+      position: sticky;
+      bottom: 0;
+      margin-top: 1.5rem;
+      padding: 0.85rem 1rem;
+      background: color-mix(in srgb, var(--bg-secondary) 94%, transparent);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 -4px 18px rgba(0,0,0,0.06);
+      backdrop-filter: blur(12px);
+    }
+    .confirm-hint { color: var(--text-secondary); font-size: 0.85rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .confirm-hint[data-state="ready"] { color: var(--accent); }
+    .confirm-hint[data-state="confirmed"] { color: var(--success); }
+    .confirm-button {
+      flex-shrink: 0;
+      background: var(--accent);
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .confirm-button:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
+    .confirm-button:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+      cursor: not-allowed;
+      transform: none;
+    }
+    .confirm-button.confirmed {
+      background: var(--success);
+      color: white;
+    }
+    .choice-note {
+      width: 100%;
+      margin-top: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: var(--text-primary);
+      font: inherit;
+      resize: vertical;
+      min-height: 4rem;
+    }
   </style>
 </head>
 <body>
