@@ -92,6 +92,14 @@ $STATE_DIR/events
 - 连续点击多个方案说明用户可能犹豫
 - 用户文字反馈优先级高于点击事件
 
+优先用等待脚本减少用户来回切换：
+
+```bash
+scripts/wait-for-choice.sh "$STATE_DIR" --timeout-seconds 900 --settle-seconds 1
+```
+
+脚本输出最新事件后，直接根据 `choice` 或 `value` 继续下一步。只有在等待超时、环境不支持长时间运行命令，或需要用户补充文字原因时，才让用户回到 AI 聊天窗口。
+
 ## 回到终端
 
 当下一步不需要浏览器时，推送等待页：
