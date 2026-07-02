@@ -1,0 +1,4 @@
+interface:
+  display_name: "DB Designer"
+  short_description: "根据 PRD 与现有数据库设计生成增量 SQL 脚本"
+  default_prompt: "Use $db-designer to generate a database incremental SQL script from the current schema and latest PRD."

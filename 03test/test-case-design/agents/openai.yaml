@@ -1,0 +1,4 @@
+interface:
+  display_name: "测试用例设计"
+  short_description: "根据需求文档、产品原型和历史用例生成规范测试用例表"
+  default_prompt: "使用 $test-case-design 根据当前目录中的产品需求文档、原型文件和历史用例生成结构化测试用例。"
