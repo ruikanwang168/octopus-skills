@@ -1,4 +1,4 @@
 interface:
   display_name: "Skill 需求架构师"
-  short_description: "通过访谈沉淀 Skill 需求文档并交给 skill-creator 创建"
-  default_prompt: "Use $design-skill-brief to clarify my Skill idea, write the brief, then create the Skill."
+  short_description: "梳理 Skill 需求并选择契约、检查点、SOP 或混合执行模式"
+  default_prompt: "Use $design-skill-brief to clarify my Skill idea, choose its execution constraint mode, write the brief, then create the Skill."
