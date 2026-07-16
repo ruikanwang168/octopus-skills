@@ -271,3 +271,43 @@ git diff --check
 ```
 
 Expected: the behavior contract and official Skill validator pass, with no whitespace errors.
+
+### Task 8: Add structured pain-to-capability-to-function traceability
+
+**Files:**
+- Modify: `01product/01demand/biz-analysis/tests/validate_skill.py`
+- Modify: `01product/01demand/biz-analysis/references/analysis-framework.md`
+- Modify: `01product/01demand/biz-analysis/references/document-template.md`
+- Modify: `01product/01demand/biz-analysis/SKILL.md`
+- Modify: `01product/01demand/biz-analysis/README.md`
+
+- [ ] **Step 1: Add failing traceability assertions**
+
+Require a pain-point overview, `P1` pain identifiers, `C1` capability identifiers, explicit pain-to-capability links, and an “对应能力编号” column in all three function-list variants.
+
+- [ ] **Step 2: Run the behavior contract and verify RED**
+
+```bash
+python3 01product/01demand/biz-analysis/tests/validate_skill.py
+```
+
+Expected: fail because the current pain and capability tables have no stable identifiers.
+
+- [ ] **Step 3: Update pain and capability definitions**
+
+Add a 1–3 sentence overall pain summary. Define the pain table with `P1`, and the capability table with `C1` plus linked pain IDs. Allow multiple IDs separated by commas.
+
+- [ ] **Step 4: Link all function-list variants to capabilities**
+
+Add “对应能力编号” to full product, incremental iteration, and small-tool function tables. Require every function item to link to at least one capability; defensive functions without a direct pain must link to the applicable exception, dependency, compatibility, or audit requirement.
+
+- [ ] **Step 5: Verify the complete traceability chain**
+
+```bash
+python3 01product/01demand/biz-analysis/tests/validate_skill.py
+uv run --with pyyaml python /Users/ruikanwang/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
+  01product/01demand/biz-analysis
+git diff --check
+```
+
+Expected: all checks pass, and the templates support `P1 → C1 → 功能项` traceability.
