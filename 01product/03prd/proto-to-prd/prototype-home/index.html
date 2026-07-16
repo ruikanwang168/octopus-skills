@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI研发路书</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="AI研发路书首页">
+          <span class="brand-mark" aria-hidden="true">AR</span>
+          <span>
+            <strong>AI研发路书</strong>
+            <small>研发全生命周期工具指引</small>
+          </span>
+        </a>
+
+        <nav class="nav-links" aria-label="主导航">
+          <a href="#" aria-current="page">路线图</a>
+          <a href="#node-library">节点库</a>
+          <a href="#templates">模板</a>
+          <a href="#config">配置中心</a>
+        </nav>
+
+        <div class="top-actions">
+          <button class="icon-button" type="button" id="densityToggle" aria-label="切换紧凑视图">
+            <span aria-hidden="true">=</span>
+          </button>
+          <button class="primary-action" type="button" id="openConfig">编辑流程配置</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="side-panel" aria-label="路线总览">
+          <section class="summary-block">
+            <p class="section-kicker">Lifecycle</p>
+            <h1>从需求到增长的 AI 研发路线</h1>
+            <p>
+              把每个研发节点拆成可执行步骤，并明确对应的输入、处理逻辑、输出、模板和可调用 skills。
+            </p>
+          </section>
+
+          <section class="metric-grid" aria-label="流程指标">
+            <article>
+              <strong>6</strong>
+              <span>大阶段</span>
+            </article>
+            <article>
+              <strong>18</strong>
+              <span>小节点</span>
+            </article>
+            <article>
+              <strong>12</strong>
+              <span>必做节点</span>
+            </article>
+            <article>
+              <strong>4</strong>
+              <span>回环路径</span>
+            </article>
+          </section>
+
+          <section class="control-block" aria-label="筛选节点">
+            <label class="field">
+              <span>搜索节点、skill 或模板</span>
+              <input id="searchInput" type="search" placeholder="例如 PRD、代码审查、上线" />
+            </label>
+
+            <div class="segmented" role="group" aria-label="节点筛选">
+              <button class="is-active" type="button" data-filter="all">全部</button>
+              <button type="button" data-filter="required">必做</button>
+              <button type="button" data-filter="optional">可选</button>
+            </div>
+          </section>
+
+          <section class="legend" aria-label="图例">
+            <div><span class="dot required"></span>必做节点</div>
+            <div><span class="dot optional"></span>条件节点</div>
+            <div><span class="dot loop"></span>可回环优化</div>
+          </section>
+        </aside>
+
+        <section class="map-stage" aria-label="研发路线图">
+          <div class="map-toolbar">
+            <div>
+              <p class="section-kicker">Roadmap Canvas</p>
+              <h2>全局研发生命周期</h2>
+            </div>
+            <div class="map-tools">
+              <button class="ghost-button" type="button" id="resetView">重置选中</button>
+              <button class="ghost-button" type="button" id="toggleOptional">隐藏可选</button>
+            </div>
+          </div>
+
+          <div class="roadmap" id="roadmap" aria-live="polite"></div>
+
+          <div class="config-strip" id="config">
+            <div>
+              <strong>后台配置模型</strong>
+              <span>阶段、节点、必选状态、条件分支、回环关系、模板与工具链接均由配置驱动。</span>
+            </div>
+            <button class="secondary-action" type="button" id="previewConfig">查看配置样例</button>
+          </div>
+        </section>
+
+        <aside class="detail-panel" aria-label="节点详情">
+          <div class="detail-empty" id="detailEmpty">
+            <p class="section-kicker">Node Detail</p>
+            <h2>点击任一小节点查看说明</h2>
+            <p>右侧会展示介绍、使用场景、输入输出、处理流程、示例地址和关联 skills。</p>
+          </div>
+
+          <article class="detail-card" id="detailCard" hidden>
+            <div class="detail-head">
+              <div>
+                <p class="section-kicker" id="detailStage">阶段</p>
+                <h2 id="detailTitle">节点标题</h2>
+              </div>
+              <span class="status-pill" id="detailStatus">必做</span>
+            </div>
+
+            <div class="tab-list" role="tablist" aria-label="节点详情分类">
+              <button class="is-active" type="button" data-tab="overview">介绍</button>
+              <button type="button" data-tab="input">输入</button>
+              <button type="button" data-tab="process">流程</button>
+              <button type="button" data-tab="output">输出</button>
+              <button type="button" data-tab="links">资源</button>
+            </div>
+
+            <div class="detail-section" id="detailContent"></div>
+          </article>
+        </aside>
+      </main>
+
+      <section class="library-band" id="node-library" aria-label="节点库与模板">
+        <div class="library-head">
+          <div>
+            <p class="section-kicker">Node Library</p>
+            <h2>常用节点与模板入口</h2>
+          </div>
+          <a class="text-link" href="#templates">查看全部模板</a>
+        </div>
+        <div class="library-grid" id="libraryGrid"></div>
+      </section>
+
+      <dialog class="config-dialog" id="configDialog" aria-labelledby="configTitle">
+        <div class="dialog-head">
+          <div>
+            <p class="section-kicker">Config Preview</p>
+            <h2 id="configTitle">流程配置样例</h2>
+          </div>
+          <button class="icon-button" type="button" id="closeConfig" aria-label="关闭配置样例">
+            <span aria-hidden="true">x</span>
+          </button>
+        </div>
+        <pre><code>{
+  "phase": "产品定义",
+  "node": "PRD生成",
+  "required": true,
+  "inputs": ["业务需求梳理文档", "用户场景", "约束条件"],
+  "outputs": ["PRD草案", "AI开发说明书"],
+  "next": [
+    { "to": "原型标注", "condition": "需要页面级说明" },
+    { "to": "技术方案", "condition": "进入研发评审" }
+  ],
+  "loopTo": ["需求澄清"]
+}</code></pre>
+      </dialog>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

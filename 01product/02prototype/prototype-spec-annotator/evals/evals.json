@@ -1,0 +1,20 @@
+{
+  "skill_name": "prototype-spec-annotator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "分析这个多页面 React 原型项目，为全部页面生成可维护 Markdown 需求说明，不要生成 inline 说明块。",
+      "expected_output": "生成 src/page-specs/current/*.md、history/<pageKey>/、registry.json 和 viewer-config.json；说明文件包含 specSchemaVersion: 2、storageFormat: markdown 和非空章节规则。"
+    },
+    {
+      "id": 2,
+      "prompt": "把这个项目旧的 current/*.json 需求说明迁移成 Markdown，先 dry-run，然后说明会写哪些文件。",
+      "expected_output": "使用 migrate 模式，识别 legacy JSON，输出 current/<pageKey>.md 目标路径、registry 更新和覆盖风险；不静默覆盖已有 Markdown。"
+    },
+    {
+      "id": 3,
+      "prompt": "只审计这个原型项目的需求说明体系是否健康，不要修改任何文件。",
+      "expected_output": "使用 audit 模式，检查 Markdown frontmatter、pageKey 与文件名、registry 覆盖、history 目录、章节规则、legacy inline/JSON 残留和运行时接线风险。"
+    }
+  ]
+}

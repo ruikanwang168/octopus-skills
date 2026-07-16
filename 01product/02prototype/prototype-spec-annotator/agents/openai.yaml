@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prototype Spec Annotator"
+  short_description: "Maintain Markdown specs for prototypes"
+  default_prompt: "Use $prototype-spec-annotator to analyze an existing prototype project, generate or update Markdown page specs, and optionally wire a local spec viewer."

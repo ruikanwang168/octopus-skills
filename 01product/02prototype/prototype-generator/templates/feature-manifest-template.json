@@ -1,0 +1,31 @@
+{
+  "iterationSlug": "",
+  "featureSlug": "",
+  "featureName": "",
+  "updatedAt": "",
+  "iterationName": "",
+  "summary": "",
+  "sourceRequirement": "requirements.md",
+  "sourceIndex": "prototype-index.md",
+  "workspaceMode": "prototype-starter-compatible",
+  "pages": [
+    {
+      "title": "",
+      "path": "",
+      "pageKey": "",
+      "surface": "page",
+      "sourceTaskIds": [],
+      "designPatternRefs": [],
+      "scenarios": [
+        {
+          "title": "",
+          "pageKey": "",
+          "surface": "drawer",
+          "parentPageKey": "",
+          "sourceTaskIds": [],
+          "designPatternRefs": []
+        }
+      ]
+    }
+  ]
+}

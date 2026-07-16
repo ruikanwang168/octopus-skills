@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prototype Starter"
+  short_description: "Build evidence-backed Web prototypes from declared layout profiles"
+  default_prompt: "Use $prototype-starter to initialize or evolve the Web prototype. Validate DESIGN readiness before writing, select the representative template's declared layout profile, and never invent product regions, viewports, content, or visual values. Use reconstruction for screenshot/URL evidence without a local baseline, incremental for changes to an approved local page, and design-system for shared or confirmed design-gap work. Require browser evidence only for the dynamic fidelity viewports declared by the selected profile. Default to static HTML unless React or Vue is explicitly requested."

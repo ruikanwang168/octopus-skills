@@ -1,0 +1,191 @@
+{
+  "skill_name": "prototype-starter",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "使用 tests/fixtures/DESIGN.md 初始化一个默认 HTML 产品原型项目。完成设计系统 authoring 后新增一个用户列表页面，并说明日常生成页面时需要读取哪些设计文件。",
+      "expected_output": "项目包含精简 authoring-context；完整 DESIGN 仅在首次 shared authoring 或冲突时读取；代表页独立于开发入口；finalization 绑定布局报告、页面 hash 和桌面/移动截图。",
+      "files": ["tests/fixtures/DESIGN.md"],
+      "assertions": [
+        "生成 design-system/context-index.json 并选择任务 profile",
+        "不会把通用 scaffold 当作已完成页面",
+        "finalize-design-system 使用 preview-manifest 并绑定布局报告与双端截图"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "现有原型里已经有用户列表，这次只增加所属组织筛选和所属组织列，其他导航、筛选项、字段、按钮、分页和移动布局都不能变化。请创建一个新迭代原型。",
+      "expected_output": "任务被分类为 incremental；manifest 声明 baseline、changes、preserve、allowedFiles；新页面从基线复制而非通用模板；发布需要基线/当前双端截图和 visual diff；白名单外改动被拒绝。",
+      "files": [],
+      "assertions": [
+        "使用 mode incremental 和项目内 baseline.path",
+        "生成 incremental-contract.json",
+        "只修改 allowedFiles 且保留旧页面",
+        "发布审核包含 baseline/current 桌面移动截图和 diff report"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "新增一个任务中心页面，目前只有页面名称，没有字段、按钮或交互需求。先帮我生成原型。",
+      "expected_output": "生成可访问占位页，不推断业务 UI；发布检查失败，直到 requirementStatus confirmed 且 description 完整并完成真实 authoring。",
+      "files": [],
+      "assertions": [
+        "页面使用 placeholder generation mode",
+        "没有臆造字段、按钮、数据或交互",
+        "release gate 拒绝占位页"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "我只有现有产品的用户列表桌面端和移动端截图，没有项目内旧原型。请按截图还原一个新原型，并保证证据可追溯。",
+      "expected_output": "任务使用 reconstruction 而不是 incremental；先登记 evidence source；生成 reconstruction-contract；页面完成前保持 reconstruction-scaffold；发布需要 reference/current 双端截图和 reconstruction comparison report。",
+      "files": [],
+      "assertions": [
+        "不虚构本地 baseline.path",
+        "manifest 使用 mode reconstruction 和 evidenceRefs",
+        "生成 reconstruction-contract.json",
+        "发布要求 reconstruction-authored 和双端 comparison report"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "用户列表和订单列表都出现了同一种可折叠筛选区，但当前 shared 没有。请判断怎么沉淀并处理发布。",
+      "expected_output": "登记并分类 shared-gap，引用两个页面证据；确认后更新 shared registry 和 usedBy；应用后重新审核受影响页面；confirmed/applied 阶段阻断受影响页面发布。",
+      "files": [],
+      "assertions": [
+        "创建 evidence-backed shared-gap",
+        "shared apply 关联 registryRefs 和 usedBy",
+        "只阻断 affectedPageKeys",
+        "验证后状态为 verified"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "线上产品页面和 DESIGN.md 对筛选区默认展开状态的描述冲突，只有一张刚截的图。请继续生成原型并处理这个冲突。",
+      "expected_output": "记录 evidence-conflict，不凭单张截图直接改写 DESIGN/shared；未确认时警告；确认权威来源后重新分类并进入相应处理分支。",
+      "files": [],
+      "assertions": [
+        "单次观察不会自动改写 DESIGN",
+        "缺口分类为 evidence-conflict",
+        "记录产品版本和采集证据",
+        "确认前不提升 shared"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "DESIGN.md 这次只修改了 Button 组件规则。项目里有用户列表、订单列表和纯详情页，只有前两个声明依赖 components。请刷新并说明哪些页面要重新检查。",
+      "expected_output": "contract v4 仅 components hash 变化；design-change-plan 只列出依赖 components 的页面；纯详情页 profile 保持有效；shared authoring 仍需按影响计划对齐。",
+      "files": [],
+      "assertions": [
+        "生成 runtimeHashes 和 changedDomains components",
+        "影响计划仅包含声明 components 依赖的页面",
+        "未声明 v4 元数据的旧页面保守按全领域处理",
+        "文档性变更不触发渲染回归"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "为了快速通过页面审核，我准备提交 1x1 截图，并把变化区域 mask 成页面的 80%。请帮我完成发布。",
+      "expected_output": "拒绝伪证据；截图尺寸必须匹配 viewport 且达到最小值；mask 超出默认覆盖率失败，除非有明确的大 mask 原因；不能通过放宽证据绕过还原度门禁。",
+      "files": [],
+      "assertions": [
+        "拒绝 1x1 截图",
+        "校验截图尺寸和 viewport",
+        "拒绝无理由的超大 mask",
+        "不绕过发布门禁"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "使用一个只有 name 和 language 的 DESIGN.md 初始化 HTML 原型。请直接执行初始化。",
+      "expected_output": "就绪度检查返回 needs-input/退出码 2；按最多三个主题向用户询问；不创建输出目录，也不补通用颜色、布局、导航或业务数据。",
+      "files": [],
+      "assertions": [
+        "信息不足时初始化默认阻断且零文件写入",
+        "输出结构化 blockingIssues 和可接受证据",
+        "不会用默认视觉或业务内容补齐 DESIGN"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "DESIGN.md 的主响应式断点写为 992，但另一个布局段落仍写 960；工作页签父级也没有确认。请初始化项目。",
+      "expected_output": "报告 layout-conflict 并要求确认唯一断点和页签父级；不自行选 960 或 992，不创建项目。",
+      "files": [],
+      "assertions": [
+        "检测冲突断点",
+        "要求用户确认页签父级",
+        "冲突解决前不写输出"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "检查生成的代表页面：产品壳里意外出现两条工作页签栏，页面在 1280x720 还产生 body 滚动。请完成设计系统 finalization。",
+      "expected_output": "布局审计和 finalizer 拒绝结果，明确报告页签数量和 body scroll；修复后要求重新 prepare、审计、截图，旧报告不能复用。",
+      "files": [],
+      "assertions": [
+        "重复工作页签导致审计失败",
+        "非预期 body 滚动导致审计失败",
+        "页面变化使旧 manifest/report/screenshot 失效"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "对完整且已确认的绿地 DESIGN.md 初始化原型，并说明生成代表页面阶段需要读取哪些文件以及 token 控制方式。",
+      "expected_output": "只读取 authoring-context 对应领域；design-contract 保持机器输入；单领域上下文小于 25KB；不重复生成 preview/showcase。",
+      "files": ["tests/fixtures/DESIGN.md"],
+      "assertions": [
+        "按领域读取 authoring-context",
+        "不把 design-contract 加入模型必读上下文",
+        "只生成 representative 页面和外部 launcher"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "使用 evals/fixtures/DESIGN-tabless-desktop.md 初始化 HTML 原型并检查代表页面。产品明确没有工作页签。",
+      "expected_output": "初始化成功；页面只有 portal profile 声明的 header、content、footer，工作页签 DOM 数量为 0；契约按 desktop 视口审计 absent 区域。",
+      "files": ["evals/fixtures/DESIGN-tabless-desktop.md"],
+      "assertions": [
+        "生成 v2 layout-model 和 layout-contract",
+        "代表页面不生成工作页签",
+        "route-tabs 的静态与 desktop 可见数量均为 0",
+        "不生成固定后台侧栏或筛选表格"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "使用 evals/fixtures/DESIGN-mobile-only.md 初始化 HTML 原型。该产品只有 390×844 移动视口和底部导航，不存在桌面端。",
+      "expected_output": "初始化成功且 manifest 只有 phone 视口；不要求桌面布局或桌面证据；底部导航高度 56px，工作页签和侧栏均不生成。",
+      "files": ["evals/fixtures/DESIGN-mobile-only.md"],
+      "assertions": [
+        "manifest 只包含 DESIGN 声明的 phone 视口",
+        "不补充桌面视口或桌面证据",
+        "bottom-navigation 为必需且高度为 56px",
+        "工作页签 DOM 数量为 0"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "使用 tests/fixtures/DESIGN-v2.md 初始化 HTML、React、Vue 三种原型，并检查移动首页和桌面门户两套 layout profile。",
+      "expected_output": "三种框架共用同一规范化区域模型；分别生成 mobile-main 和 portal-main 页面；各页面只使用绑定 profile，动态视口集合与 DESIGN 一致。",
+      "files": ["tests/fixtures/DESIGN-v2.md"],
+      "assertions": [
+        "一个 DESIGN 生成两套 layout profile",
+        "每个代表模板显式绑定对应 profile",
+        "HTML、React、Vue 的代表页区域结构一致",
+        "每个 profile 生成小于 25KB 的领域上下文"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "使用 evals/fixtures/DESIGN-incomplete.md 直接初始化 HTML 原型。不要向 DESIGN 外推断任何信息。",
+      "expected_output": "就绪度校验退出码为 2；最多按三个主题归并问题；输出目录不存在；不生成任何产品形态、视口、区域、视觉值或业务内容。",
+      "files": ["evals/fixtures/DESIGN-incomplete.md"],
+      "assertions": [
+        "信息不足时退出码为 2",
+        "输出目录零写入",
+        "问题最多归并为三个主题",
+        "不把旧后台 Shell 当作默认布局"
+      ]
+    }
+  ]
+}

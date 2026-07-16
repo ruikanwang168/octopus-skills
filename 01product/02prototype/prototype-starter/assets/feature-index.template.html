@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{FEATURE_NAME}} - {{PRODUCT_NAME}}原型</title>
+  <link rel="stylesheet" href="../shared/css/tokens.css">
+  <link rel="stylesheet" href="../shared/css/product-shell.css">
+  <link rel="stylesheet" href="../shared/css/product-components.css">
+  <link rel="stylesheet" href="../shared/css/product-patterns.css">
+  <link rel="stylesheet" href="../shared/css/prototype-meta.css">
+  <link rel="stylesheet" href="./assets/prototype.css">
+</head>
+<body>
+  <main class="proto-feature-entry">
+    <section class="proto-entry-card">
+      <a class="proto-back-link" href="../index.html">返回原型库首页</a>
+      <p class="proto-kicker">功能原型</p>
+      <h1>{{FEATURE_NAME}}</h1>
+      <p class="proto-page-summary">{{FEATURE_SUMMARY}}</p>
+
+      <div class="proto-info-grid">
+        <div class="proto-info-item">
+          <span>功能名称</span>
+          <strong>{{FEATURE_NAME}}</strong>
+        </div>
+        <div class="proto-info-item">
+          <span>更新时间</span>
+          <strong>{{UPDATED_AT}}</strong>
+        </div>
+        <div class="proto-info-item">
+          <span>所属迭代</span>
+          <strong>{{ITERATION_NAME}}</strong>
+        </div>
+        <div class="proto-info-item">
+          <span>功能目录</span>
+          <strong>{{FEATURE_SLUG}}</strong>
+        </div>
+      </div>
+
+      <section class="proto-page-list" aria-label="页面清单">
+{{PAGE_CARDS}}
+      </section>
+    </section>
+  </main>
+  <script src="./assets/prototype.js"></script>
+</body>
+</html>

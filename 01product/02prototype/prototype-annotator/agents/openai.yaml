@@ -1,0 +1,7 @@
+interface:
+  display_name: "Prototype Annotator"
+  short_description: "为产品原型生成可编辑标注和 Markdown-first 页面说明"
+  brand_color: "#1677FF"
+  default_prompt: "Use $prototype-annotator to generate or update editable annotations for the current product prototype; enable Page Specs Lite when the user asks to 开启页面说明模式 / 开启页面说明 / 生成每页说明 / 维护页面说明 / 启用 specs / 生成 specs/current, or requests long-lived per-page Markdown requirements; infer the current project directory when no path is provided."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-07-14T07:11:42+08:00",
+  "runtime": "Playwright 1.60.0 with local Chromium",
+  "fixture": "tests/fixtures/DESIGN-v2.md",
+  "results": [
+    {
+      "page": "mobile-home",
+      "viewport": "390x844",
+      "productRoots": 1,
+      "routeTabs": 0,
+      "bottomNavigation": 1,
+      "bottomNavigationHeight": 56,
+      "bodyOverflowPx": 0,
+      "contentOverflowY": "auto",
+      "passed": true
+    },
+    {
+      "page": "portal-home",
+      "viewport": "1440x900",
+      "productRoots": 1,
+      "routeTabs": 0,
+      "headerHeight": 72,
+      "footerHeight": 64,
+      "developerControlsInsideProductRoot": 0,
+      "passed": true
+    }
+  ],
+  "layoutAudit": {
+    "overallPassed": true,
+    "pages": {
+      "design-system-preview-mobile-home": true,
+      "design-system-preview-portal-home": true
+    }
+  }
+}

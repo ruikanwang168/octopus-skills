@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{PAGE_TITLE}} - 尚未设计 - {{PRODUCT_NAME}}</title>
+  <link rel="stylesheet" href="../shared/css/tokens.css">
+  <link rel="stylesheet" href="../shared/css/product-shell.css">
+  <link rel="stylesheet" href="../shared/css/product-components.css">
+  <link rel="stylesheet" href="../shared/css/product-patterns.css">
+  <link rel="stylesheet" href="../shared/css/prototype-meta.css">
+  <link rel="stylesheet" href="./assets/prototype.css">
+</head>
+<body>
+  <div
+    class="{{SHELL_ROOT_CLASS}}"
+    data-feature="{{FEATURE_SLUG}}"
+    data-page-key="{{PAGE_KEY}}"
+    data-page-kind="{{PAGE_KIND}}"
+    data-parent-page-key="{{PARENT_PAGE_KEY}}"
+    data-surface="{{SURFACE}}"
+    data-requirement-status="needs-input"
+    data-generation-mode="placeholder"
+    data-design-source-sha="{{DESIGN_SOURCE_SHA}}"
+    data-design-runtime-sha="{{DESIGN_RUNTIME_SHA}}"
+    data-design-contract-version="{{DESIGN_CONTRACT_VERSION}}"
+    data-design-domains="{{DESIGN_DOMAINS}}"
+    data-shared-refs="{{SHARED_REFS}}"
+    data-design-profile-sha="{{DESIGN_PROFILE_SHA}}"
+  >
+    <header class="{{SHELL_HEADER_CLASS}}">
+      <div class="{{SHELL_LOGO_CLASS}}">{{PRODUCT_NAME}}</div>
+    </header>
+    <div class="{{SHELL_LAYOUT_CLASS}}">
+      <main class="{{SHELL_MAIN_CLASS}}">
+        <div class="{{SHELL_TABS_CLASS}}" aria-label="页面标签">
+          <a class="{{SHELL_TAB_ITEM_CLASS}}" href="../index.html">原型库</a>
+          <a class="{{SHELL_TAB_ITEM_CLASS}}" href="./index.html">{{FEATURE_NAME}}</a>
+          <span class="{{SHELL_TAB_ITEM_CLASS}} is-active">{{PAGE_TITLE}}</span>
+        </div>
+        <div class="{{SHELL_VIEW_CLASS}}">
+          <section class="{{SHELL_PANEL_CLASS}}" aria-labelledby="placeholder-title">
+            <header class="{{SECTION_HEADER_CLASS}}">
+              <div>
+                <p class="proto-kicker">需求待补充</p>
+                <h1 id="placeholder-title" class="{{SECTION_TITLE_CLASS}}">{{PAGE_TITLE}}</h1>
+                <p class="proto-page-summary">该页面尚未设计</p>
+              </div>
+            </header>
+            <div class="proto-page-summary">
+              <p>请补充以下材料后再生成正式业务原型：</p>
+              <ul>
+                <li>本次升级功能描述</li>
+                <li>现有产品截图或可访问的网站 URL</li>
+                <li>明确保持不变的页面范围</li>
+                <li>验收要求</li>
+              </ul>
+              <p><a href="./index.html">返回功能入口</a></p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="../shared/js/product-icons.js"></script>
+  <script src="../shared/js/product-shell.js"></script>
+  <script src="./assets/prototype.js"></script>
+</body>
+</html>

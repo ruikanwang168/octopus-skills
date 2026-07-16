@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "measuredAt": "2026-07-14T07:25:00+08:00",
+  "fixture": "tests/fixtures/DESIGN-v2.md",
+  "baselineSnapshot": "/tmp/prototype-starter-universal-baseline",
+  "measurements": {
+    "oldMandatoryAuthoringBytes": 78074,
+    "newRoutedAuthoringBytes": 15382,
+    "reductionBytes": 62692,
+    "reductionPercent": 80.3,
+    "initializationAndRepresentativeReadBytes": 21855,
+    "newSkillBytes": 6128,
+    "newGeneratedAgentsBytes": 3495,
+    "newAuthoringBriefBytes": 1422,
+    "largestProfileContextBytes": 4337,
+    "secondProfileContextBytes": 4238,
+    "authoringRouterBytes": 904
+  },
+  "limits": {
+    "singleDomainContextBytes": 25000,
+    "initializationModelReadBytes": 180000
+  },
+  "status": "pass",
+  "tokenTelemetry": {
+    "status": "unavailable",
+    "reason": "The collaboration runtime and local commands did not expose actual input/output token counts. No character-to-token estimate was substituted.",
+    "requiredForFutureRuns": [
+      "input_tokens",
+      "output_tokens",
+      "duration_ms",
+      "retry_count"
+    ]
+  }
+}
