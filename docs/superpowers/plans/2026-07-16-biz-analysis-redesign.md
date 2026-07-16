@@ -233,7 +233,7 @@ git diff -- 01product/01demand/biz-analysis
 
 Expected: only the approved redesign layered on top of the existing working-tree changes.
 
-### Task 7: Flatten final document headings while retaining point numbers
+### Task 7: Flatten and continuously renumber final document headings
 
 **Files:**
 - Modify: `01product/01demand/biz-analysis/tests/validate_skill.py`
@@ -243,7 +243,7 @@ Expected: only the approved redesign layered on top of the existing working-tree
 
 - [ ] **Step 1: Add a failing heading regression test**
 
-Assert that the delivery template contains no `## 一、认知层`、`## 二、边界层`、`## 三、交付层` or `## 四、防御层` heading, and that all 16 points use fixed second-level headings from `## 1. 名词解释` through `## 16. 审计可观测`.
+Assert that the delivery template contains no `## 一、认知层`、`## 二、边界层`、`## 三、交付层` or `## 四、防御层` heading. Assert that reference sections are unnumbered, and that the output rule requires selecting applicable sections first and then numbering the retained sections continuously from 1 without gaps.
 
 - [ ] **Step 2: Run the regression test and verify RED**
 
@@ -251,15 +251,15 @@ Assert that the delivery template contains no `## 一、认知层`、`## 二、�
 python3 01product/01demand/biz-analysis/tests/validate_skill.py
 ```
 
-Expected: fail because the current template still contains the four layer headings.
+Expected: fail because the current template still requires fixed 1–16 headings and explicitly permits number gaps.
 
 - [ ] **Step 3: Flatten the delivery template**
 
-Remove the four layer headings and promote each point from a third-level heading to a fixed-number second-level heading. Keep layer classification only in the applicability matrix. State that omitted points leave intentional number gaps.
+Keep the four layer headings out of the formal document. Use unnumbered headings for the 16 reference definitions so they cannot be copied as fixed output numbers. Require the generator to remove inapplicable sections first, preserve the remaining business order, and then number output headings from 1 continuously without gaps.
 
 - [ ] **Step 4: Align controller and README wording**
 
-Clarify that the four layers are internal coverage categories and never appear as final document headings.
+Clarify that the four layers and fixed 16 point IDs are internal only; final document numbers express reading order and must be regenerated after project-specific pruning.
 
 - [ ] **Step 5: Verify GREEN**
 
