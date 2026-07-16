@@ -232,3 +232,42 @@ git diff -- 01product/01demand/biz-analysis
 ```
 
 Expected: only the approved redesign layered on top of the existing working-tree changes.
+
+### Task 7: Flatten final document headings while retaining point numbers
+
+**Files:**
+- Modify: `01product/01demand/biz-analysis/tests/validate_skill.py`
+- Modify: `01product/01demand/biz-analysis/references/document-template.md`
+- Modify: `01product/01demand/biz-analysis/SKILL.md`
+- Modify: `01product/01demand/biz-analysis/README.md`
+
+- [ ] **Step 1: Add a failing heading regression test**
+
+Assert that the delivery template contains no `## 一、认知层`、`## 二、边界层`、`## 三、交付层` or `## 四、防御层` heading, and that all 16 points use fixed second-level headings from `## 1. 名词解释` through `## 16. 审计可观测`.
+
+- [ ] **Step 2: Run the regression test and verify RED**
+
+```bash
+python3 01product/01demand/biz-analysis/tests/validate_skill.py
+```
+
+Expected: fail because the current template still contains the four layer headings.
+
+- [ ] **Step 3: Flatten the delivery template**
+
+Remove the four layer headings and promote each point from a third-level heading to a fixed-number second-level heading. Keep layer classification only in the applicability matrix. State that omitted points leave intentional number gaps.
+
+- [ ] **Step 4: Align controller and README wording**
+
+Clarify that the four layers are internal coverage categories and never appear as final document headings.
+
+- [ ] **Step 5: Verify GREEN**
+
+```bash
+python3 01product/01demand/biz-analysis/tests/validate_skill.py
+uv run --with pyyaml python /Users/ruikanwang/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
+  01product/01demand/biz-analysis
+git diff --check
+```
+
+Expected: the behavior contract and official Skill validator pass, with no whitespace errors.
