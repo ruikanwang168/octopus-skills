@@ -1,0 +1,4 @@
+interface:
+  display_name: "研发计划制定"
+  short_description: "根据 PRD、原型与现有代码仓库生成 4 份结构化研发计划"
+  default_prompt: "使用 $code-plan 分析 PRD、原型和当前代码仓库，生成研发总计划、前端研发计划、后端研发计划和接口契约。"
