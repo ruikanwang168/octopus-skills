@@ -1,4 +1,4 @@
 interface:
   display_name: "测试用例设计"
-  short_description: "根据需求文档、产品原型和历史用例生成规范测试用例表"
-  default_prompt: "使用 $test-case-design 根据当前目录中的产品需求文档、原型文件和历史用例生成结构化测试用例。"
+  short_description: "运行原型并深度检索 PRD 与前后端代码生成用例"
+  default_prompt: "使用 $test-case-design 运行并遍历原型，结合 PRD 标识的变更和现有前后端代码基线，为每个具有独立预期的操作生成测试用例并补充回归覆盖。"
