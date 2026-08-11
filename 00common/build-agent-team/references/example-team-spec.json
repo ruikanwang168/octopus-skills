@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "spec_version": 1,
+  "team_id": "customer-feedback-delivery",
+  "team_name": "客户反馈系统交付团队",
+  "mission": "交付一套经过独立验收的客户反馈分析系统",
+  "scope": "project",
+  "entry_role": "product_lead",
+  "completion_role": "product_lead",
+  "approval": {
+    "status": "confirmed",
+    "confirmed_at": "2026-08-11T10:00:00+08:00"
+  },
+  "assumptions": [
+    "首期只交付 Web 版本"
+  ],
+  "project_rules": [
+    "生产发布必须获得用户明确确认"
+  ],
+  "completion_criteria": [
+    "确认范围内的验收标准全部通过",
+    "残余风险和产物路径已经向用户披露"
+  ],
+  "roles": [
+    {
+      "role_id": "product_lead",
+      "display_name": "产品负责人",
+      "purpose": "维护需求边界、验收标准和最终汇报",
+      "responsibilities": [
+        "理解用户任务并维护确认范围",
+        "向开发角色派发可验收任务",
+        "根据独立验收结果向用户汇报"
+      ],
+      "non_responsibilities": [
+        "直接修改业务代码",
+        "绕过独立验收宣布完成"
+      ],
+      "accepted_sources": [
+        "user",
+        "release_reviewer"
+      ],
+      "may_modify_business_code": false,
+      "allowed_paths": [],
+      "prohibited_actions": [
+        "亲自实现开发任务"
+      ],
+      "outputs": [
+        "任务计划",
+        "验收标准",
+        "最终汇报"
+      ],
+      "escalation_to": "user"
+    },
+    {
+      "role_id": "fullstack_developer",
+      "display_name": "全栈开发",
+      "purpose": "实现产品负责人确认的业务交付物",
+      "responsibilities": [
+        "修改业务代码和测试",
+        "完成开发验证",
+        "提交独立验收"
+      ],
+      "non_responsibilities": [
+        "重新定义产品目标",
+        "自行宣布最终验收通过"
+      ],
+      "accepted_sources": [
+        "product_lead",
+        "release_reviewer"
+      ],
+      "may_modify_business_code": true,
+      "allowed_paths": [
+        "src/",
+        "tests/"
+      ],
+      "prohibited_actions": [
+        "未经用户确认执行生产发布"
+      ],
+      "outputs": [
+        "实现代码",
+        "验证结果",
+        "验收交接"
+      ],
+      "escalation_to": "product_lead"
+    },
+    {
+      "role_id": "release_reviewer",
+      "display_name": "发布验收",
+      "purpose": "独立验证产品范围、实现质量和发布风险",
+      "responsibilities": [
+        "根据实际产物执行验收",
+        "失败时提供可复现证据",
+        "通过后向产品负责人提交结论"
+      ],
+      "non_responsibilities": [
+        "替开发角色修复业务代码",
+        "代替产品负责人向用户最终汇报"
+      ],
+      "accepted_sources": [
+        "fullstack_developer"
+      ],
+      "may_modify_business_code": false,
+      "allowed_paths": [],
+      "prohibited_actions": [
+        "修改被验收的业务实现"
+      ],
+      "outputs": [
+        "验收证据",
+        "失败清单或通过结论",
+        "残余风险"
+      ],
+      "escalation_to": "product_lead"
+    }
+  ],
+  "workflow": [
+    {
+      "from": "user",
+      "to": "product_lead",
+      "trigger": "new_request",
+      "condition": "",
+      "required_payload": [
+        "目标",
+        "约束",
+        "期望产物"
+      ]
+    },
+    {
+      "from": "product_lead",
+      "to": "fullstack_developer",
+      "trigger": "plan_confirmed",
+      "condition": "任务包含需要实现的交付物",
+      "required_payload": [
+        "目标",
+        "产物路径",
+        "验收标准"
+      ]
+    },
+    {
+      "from": "fullstack_developer",
+      "to": "release_reviewer",
+      "trigger": "implementation_ready",
+      "condition": "开发验证已经完成",
+      "required_payload": [
+        "完成内容",
+        "产物路径",
+        "验证结果"
+      ]
+    },
+    {
+      "from": "release_reviewer",
+      "to": "fullstack_developer",
+      "trigger": "rejected",
+      "condition": "存在未通过项",
+      "required_payload": [
+        "失败项",
+        "复现证据",
+        "修复要求"
+      ]
+    },
+    {
+      "from": "release_reviewer",
+      "to": "product_lead",
+      "trigger": "accepted",
+      "condition": "配置的验收标准全部通过",
+      "required_payload": [
+        "验收结论",
+        "验证证据",
+        "残余风险"
+      ]
+    },
+    {
+      "from": "product_lead",
+      "to": "user",
+      "trigger": "final_report",
+      "condition": "已收到独立验收通过结论",
+      "required_payload": [
+        "完成摘要",
+        "产物路径",
+        "验收证据",
+        "残余风险"
+      ]
+    }
+  ],
+  "human_gates": [
+    {
+      "gate_id": "production-release",
+      "when": "团队准备执行生产发布",
+      "decision": "确认发布范围、环境和时间",
+      "blocking": true
+    }
+  ]
+}

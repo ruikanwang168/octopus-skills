@@ -1,0 +1,4 @@
+interface:
+  display_name: "动态组建 Agent 团队"
+  short_description: "根据任务访谈动态设计并初始化 Agent 角色、权限、流程与门禁"
+  default_prompt: "使用 $build-agent-team 根据我的任务设计并初始化一支合适的 Agent 团队。"
