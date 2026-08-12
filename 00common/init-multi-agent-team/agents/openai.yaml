@@ -1,0 +1,4 @@
+interface:
+  display_name: "初始化多 Agent 团队"
+  short_description: "为当前项目初始化规划、开发与验收三名长期协作的 AI 员工"
+  default_prompt: "使用 $init-multi-agent-team 为当前项目初始化三名长期协作的 AI 员工。"
