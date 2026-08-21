@@ -5,25 +5,6 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
-EXPECTED_POINTS = [
-    "名词解释",
-    "业务背景",
-    "业务痛点",
-    "涉及角色",
-    "解决方案",
-    "实现边界",
-    "核心流程",
-    "功能清单",
-    "业务实体",
-    "业务状态",
-    "数据权限",
-    "异常兜底",
-    "外部依赖",
-    "老数据兼容",
-    "非功能指标",
-    "审计可观测",
-]
-
 
 def read(relative: str) -> str:
     path = ROOT / relative
@@ -37,167 +18,131 @@ def require(text: str, pattern: str, label: str) -> None:
         raise AssertionError(f"missing {label}: {pattern}")
 
 
+def forbid(text: str, pattern: str, label: str) -> None:
+    if re.search(pattern, text, re.MULTILINE):
+        raise AssertionError(f"obsolete or conflicting {label}: {pattern}")
+
+
 def main() -> int:
     skill = read("SKILL.md")
     framework = read("references/analysis-framework.md")
-    template = read("references/document-template.md")
+    output_guide = read("references/document-template.md")
     readme = read("README.md")
     metadata = read("agents/openai.yaml")
 
-    require(
-        skill,
-        r"(?m)^description:\s*\|\n\s+Use when",
-        "trigger-focused description",
-    )
-    for point in EXPECTED_POINTS:
-        if point not in framework or point not in template:
-            raise AssertionError(f"16-point coverage missing: {point}")
-
-    for layer_heading in [
-        "## 一、认知层",
-        "## 二、边界层",
-        "## 三、交付层",
-        "## 四、防御层",
-    ]:
-        if re.search(rf"(?m)^{re.escape(layer_heading)}$", template):
-            raise AssertionError(
-                f"delivery template must not expose internal layer heading: {layer_heading}"
-            )
-
-    for point in EXPECTED_POINTS:
-        require(
-            template,
-            rf"(?m)^## {re.escape(point)}$",
-            f"unnumbered reference heading {point}",
-        )
-
-    fixed_heading_pattern = (
-        rf"(?m)^## \d+\. ({'|'.join(re.escape(point) for point in EXPECTED_POINTS)})$"
-    )
-    if re.search(fixed_heading_pattern, template):
-        raise AssertionError(
-            "delivery reference must not expose fixed point numbers as output headings"
-        )
-
-    numbering_rules = skill + template + readme
+    # Trigger and routing contract.
+    require(skill, r"(?m)^description:\s*\|\n\s+深挖", "Chinese trigger-focused description")
     for phrase in [
-        "先删除不适用章节",
-        "从 1 开始连续重新编号",
-        "不允许跳号",
-        "显示编号只表示文档阅读顺序",
-    ]:
-        if phrase not in numbering_rules:
-            raise AssertionError(f"continuous numbering rule missing: {phrase}")
-
-    if re.search(r"(?<!不)允许跳号", numbering_rules):
-        raise AssertionError("obsolete fixed numbering rule remains: 允许跳号")
-    if "保留原编号" in numbering_rules:
-        raise AssertionError("obsolete fixed numbering rule remains: 保留原编号")
-
-    for phrase in [
-        "每轮只问 2 到 4 个问题",
-        "表面诉求",
-        "必要性检验",
-        "不按 16 个考量点逐项提问",
-        "references/analysis-framework.md",
-        "references/document-template.md",
+        "真实问题",
+        "必要能力",
+        "本期边界",
+        "帮我梳理需求",
+        "输出形式按项目和材料选择",
     ]:
         if phrase not in skill:
-            raise AssertionError(f"conversation guard missing: {phrase}")
+            raise AssertionError(f"trigger/output description missing: {phrase}")
+    require(skill, r"先判断是否存在正在使用的系统或流程", "existing-system-first routing")
+    require(skill, r"1\. 全新产品.*\n2\. 增量迭代.*\n3\. 小工具", "project routes")
+    forbid(
+        skill,
+        r"整体重构，或涉及多个角色和完整业务流程",
+        "ambiguous full-new-product route",
+    )
 
-    concision_rules = skill + template
+    # Deep-exploration contract.
     for phrase in [
-        "最少文字表达完整业务结论",
-        "篇幅不设目标",
-        "跨章节重复",
-        "同一事实只在最合适的章节完整表达一次",
-        "精简不得删掉",
+        "待验证假设",
+        "事实：",
+        "因果：",
+        "反事实：",
+        "代价与风险：",
+        "最小必要范围",
+        "每轮只问 2 到 4 个问题",
+        "停止深挖",
     ]:
-        if phrase not in concision_rules:
-            raise AssertionError(f"concise delivery rule missing: {phrase}")
-
-    terminology_rules = skill + framework + template
-    for phrase in [
-        "名词解释采用准入制",
-        "核心业务领域",
-        "关键业务对象、规则、流程节点或计算口径",
-        "普通系统词、页面操作词、通用管理词",
-        "没有通过准入的术语时",
-    ]:
-        if phrase not in terminology_rules:
-            raise AssertionError(f"terminology scope rule missing: {phrase}")
-
-    product_type_rules = skill + framework + template
-    for phrase in [
-        "涉及角色必须结合主流程与用户讨论",
-        "受影响角色必须与用户讨论并确认",
-        "谁在什么场景下使用什么功能",
-        "关联原有功能（修改时必填）",
-        "有独立业务身份和生命周期",
-        "状态归类",
-        "既有 / 新增 / 修改",
-        "只写本次相关的新增或修改项",
-        "只写本次新增、修改功能或流程变化直接产生、改变或影响的异常",
-        "只写本次新增、修改功能或流程变化直接新增、改变或影响的依赖",
-        "只写本次新增、修改功能或流程变化直接新增、改变或影响的留痕、统计和告警要求",
-    ]:
-        if phrase not in product_type_rules:
-            raise AssertionError(f"project-type delivery rule missing: {phrase}")
+        if phrase not in skill:
+            raise AssertionError(f"deep-exploration rule missing: {phrase}")
 
     for phrase in [
-        "页面布局",
-        "按钮放在哪里",
-        "数据库字段",
-        "技术状态机",
-        "监控实现",
+        "引导用户思考",
+        "当前判断 → 判断依据 → 为什么重要",
+        "最近一次真实发生的场景",
+        "二选一、优先级排序、具体案例、反例",
+        "简短的“当前判断 / 依据 / 影响”",
+        "不要输出冗长的内部思维过程",
     ]:
-        if phrase not in framework:
-            raise AssertionError(f"detail boundary missing: {phrase}")
+        if phrase not in skill:
+            raise AssertionError(f"user-guidance rule missing: {phrase}")
 
-    expected_tables = [
-        "| 痛点编号 | 发生场景 | 当前做法 | 真正障碍 | 业务影响 | 期望结果 |",
-        "| 能力编号 | 核心业务能力 | 对应痛点/防御要求编号 | 作用对象 | 预期业务结果 |",
-        "| 使用角色 | 使用场景 | 功能 | 对应能力编号 | 业务动作 | 业务对象 | 业务结果 | 版本边界 |",
-        "| 变更类型 | 使用角色 | 使用场景 | 功能 | 关联原有功能（修改时必填） | 本次变化 | 对应能力编号 | 业务结果 | 兼容要求 |",
-        "| 动作点 | 对应能力编号 | 输入 | 处理规则 | 输出 | 异常处理 |",
-        "| 核心业务实体 | 业务定义 | 关联实体 | 生命周期 |",
-        "| 变更类型 | 核心业务实体 | 原有定义或关系 | 本次变化 | 变更后定义或关系 | 生命周期影响 |",
-        "| 业务对象 | 状态 | 状态归类 | 原有定义或流转 | 本次定义或流转 | 触发事件 | 下一状态 | 异常去向 |",
-        "| 变更类型 | 角色 | 数据对象 | 原可见或操作边界 | 本次可见或操作边界 | 限制或例外 |",
-    ]
-    for table in expected_tables:
-        if table not in template:
-            raise AssertionError(f"project-specific function table missing: {table}")
-
-    defensive_tables = [
-        "| 异常编号 | 异常场景 | 触发条件 | 业务处理 | 是否继续主流程 | 人工介入或责任人 | 恢复方式 |",
-        "| 依赖编号 | 依赖对象 | 业务用途 | 依赖负责人 | 不可用影响 | 降级或替代原则 | 当前结论 |",
-        "| 兼容编号 | 影响对象 | 当前情况 | 本次变化 | 保留或转换原则 | 默认规则 | 在途业务处理 | 验证口径 | 失败处理 |",
-        "| 审计编号 | 业务事件 | 操作者或来源 | 业务对象 | 必须留存的业务事实 | 查询、统计或告警用途 | 需要获知的角色 |",
-    ]
-    for table in defensive_tables:
-        if table not in template:
-            raise AssertionError(f"defensive traceability table missing: {table}")
-
-    traceability_rules = skill + framework + template + readme
+    # Output must be content-driven and format-flexible.
     for phrase in [
-        "总体描述",
-        "1 至 3 句话",
-        "P1",
-        "C1",
-        "P1 → C1 → 功能项",
-        "每项功能必须关联至少一个能力编号",
-        "多个编号",
+        "输出契约：不固定格式，固定内容质量",
+        "输出前校验",
+        "最终校验闭环",
+        "最终校验是正式交付的闸门",
+        "校验不通过时",
+        "直到校验通过",
+        "不能生成正式文档",
+        "明确阻塞原因",
+        "事实、观点、推测和待确认",
+        "反事实检验",
+        "范围外内容有排除依据",
+        "不以章节数量、表格数量或 16 点覆盖率作为完成条件",
     ]:
-        if phrase not in traceability_rules:
-            raise AssertionError(f"traceability rule missing: {phrase}")
+        if phrase not in skill:
+            raise AssertionError(f"content-quality contract missing: {phrase}")
+    for phrase in [
+        "不强制出现",
+        "不强制使用 16 点表格",
+        "不强制使用 Mermaid",
+        "不强制使用 `P1 → C1 → 功能项` 编号链",
+    ]:
+        if phrase not in skill:
+            raise AssertionError(f"format-flexibility rule missing: {phrase}")
 
-    if "16 个核心考量点" not in readme:
-        raise AssertionError("README does not describe the 16-point framework")
+    # Progressive disclosure and reference roles.
+    require(skill, r"analysis-framework\.md", "analysis framework routing")
+    require(skill, r"document-template\.md", "output guide routing")
+    require(framework, r"风险扫描池", "risk-pool framing")
+    require(framework, r"不是固定目录、问卷或输出模板", "non-template framework boundary")
+    require(framework, r"反事实", "counterfactual analysis")
+    require(framework, r"范围论证", "scope reasoning")
+    require(framework, r"用户引导式提问", "guided-questioning section")
+    require(framework, r"常见语义冲突", "semantic-conflict scan")
+    require(framework, r"知识导航 vs 工作台", "navigation/workbench conflict")
+    require(framework, r"最终校验不通过时不能直接交付", "iterative final gate")
+    require(framework, r"停止深挖”不等于“允许交付", "stop-vs-delivery distinction")
+    require(output_guide, r"输出形式不固定", "format-flexible output guide")
+    require(output_guide, r"最小内容契约", "minimum content contract")
+    require(output_guide, r"内容校验", "output validation")
+    require(output_guide, r"可选结构示例", "optional output examples")
+    require(output_guide, r"面向用户的确认摘要", "user-facing confirmation summary")
+    require(output_guide, r"最终校验闸门", "final validation gate")
+    require(output_guide, r"直到全部必过项通过", "validation loop")
+
+    # Ensure the old fixed-template contract did not survive the rewrite.
+    forbid(output_guide, r"先删除不适用章节，再.*连续重新编号", "fixed heading renumbering")
+    forbid(output_guide, r"## 1\. 名词解释", "fixed delivery heading")
+    forbid(output_guide, r"16 点覆盖率作为完成条件", "coverage as completion gate")
+    forbid(readme, r"固定的 16 点 ID", "fixed point IDs in README")
+
+    # Status, confirmation, and no-invention boundaries.
+    for phrase in [
+        "非阻塞待确认项",
+        "阻塞性冲突",
+        "当前推测",
+        "不编造业务规模",
+        "不通过互联网搜索推断企业内部规则",
+    ]:
+        if phrase not in skill:
+            raise AssertionError(f"uncertainty/safety rule missing: {phrase}")
+
     if "$biz-analysis" not in metadata:
         raise AssertionError("openai metadata default prompt must mention $biz-analysis")
+    if "16 个分析维度只作为内部风险扫描池" not in readme:
+        raise AssertionError("README does not describe risk-pool behavior")
 
-    print("OK: biz-analysis structural and behavior contract passed")
+    print("OK: biz-analysis behavior and content-contract validation passed")
     return 0
 
 
