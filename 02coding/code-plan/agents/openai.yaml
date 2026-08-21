@@ -1,4 +1,0 @@
-interface:
-  display_name: "Code Plan"
-  short_description: "基于 PRD、原型与代码拆分精简的 AI 开发计划"
-  default_prompt: "使用 $code-plan 根据 PRD、原型和现有代码拆分可确认、可执行的 AI 开发计划。"
