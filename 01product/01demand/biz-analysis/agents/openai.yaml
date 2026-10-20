@@ -1,4 +1,0 @@
-interface:
-  display_name: "Business Requirements Analysis"
-  short_description: "深挖真实业务问题，验证必要能力与本期边界"
-  default_prompt: "Use $biz-analysis to challenge a vague business request, uncover the real problem, test necessity and alternatives, define scope, and produce a confirmed requirements baseline in the clearest suitable format."
