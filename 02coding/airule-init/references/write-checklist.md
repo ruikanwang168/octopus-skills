@@ -7,14 +7,15 @@
 摘要必须包含：
 
 - 模式：初始化模式 / 更新模式。
-- 将创建的基础文件：`AGENTS.md`、`PROJECT.md`、`USER_RULES.md`、`AI_IGNORE.md` 中哪些会被创建。
-- 将更新的基础文件：`AGENTS.md`、`PROJECT.md` 中哪些会被更新。
-- `USER_RULES.md` 处理方式：创建占位 / 读取但不修改 / 用户明确要求修改。
-- `AI_IGNORE.md` 处理方式：创建默认忽略模板 / 读取并应用但不修改 / 用户明确要求修改。
-- 工具入口选择：Claude Code、Cursor、Windsurf、旧版 Cursor 规则、暂不生成工具入口。
-- 将创建或更新的工具入口文件路径。
-- 将创建的空目录：`AiCoder/prd/`、`AiCoder/task/`、`AiCoder/design/`、`AiCoder/db/`。
-- `PROJECT.md` 已识别的技术栈、入口、核心目录和命令摘要。
+- 将创建的基础文件：`AGENTS.md`、`harness/PROJECT.md`、`harness/USER_RULES.md`、`harness/AI_IGNORE.md` 中哪些会被创建。
+- 将更新的基础文件：`AGENTS.md`、`harness/PROJECT.md` 中哪些会被更新。
+- `harness/USER_RULES.md` 处理方式：创建占位 / 读取但不修改 / 从旧位置原样迁移 / 用户明确要求修改。
+- `harness/AI_IGNORE.md` 处理方式：创建默认忽略模板 / 读取并应用但不修改 / 从旧位置原样迁移 / 用户明确要求修改。
+- 默认工具支持：Codex（`AGENTS.md`）和 Claude Code（`CLAUDE.md`），两者均生成或维护，无需选择。
+- 将创建或更新的 `CLAUDE.md` 路径。
+- 将创建的空目录：`harness/plan/`、`harness/design/`。
+- 如有旧版布局，将迁移的源路径、目标路径及冲突或待确认的计划归属。
+- `harness/PROJECT.md` 已识别的技术栈、入口、核心目录和命令摘要。
 - 待确认事项。
 
 ## 写入后校验
@@ -22,16 +23,35 @@
 写入完成后必须检查：
 
 - `AGENTS.md` 存在，并包含“进入仓库必读”章节。
-- `AGENTS.md` 明确要求读取 `PROJECT.md`、`USER_RULES.md` 和 `AI_IGNORE.md`。
-- `AGENTS.md` 写明规则优先级：`USER_RULES.md` > `AI_IGNORE.md` > `PROJECT.md` > `AGENTS.md` > 工具入口指针文件。
-- `PROJECT.md` 存在，且四个章节都不是空标题。
-- `PROJECT.md` 的技术栈、命令、目录职责能追溯到真实文件；无法追溯的内容应写“待确认”。
-- `PROJECT.md` 的源码事实没有来自 `AI_IGNORE.md` 声明的忽略路径，除非用户明确要求并在摘要中说明原因。
-- `PROJECT.md` 正文没有“本次新增”“旧规则已移除”“原来是”等更新过程痕迹。
-- `USER_RULES.md` 存在；如果原文件已存在，哈希或内容不得被自动修改。
-- `AI_IGNORE.md` 存在；如果原文件已存在，哈希或内容不得被自动修改。
-- 如果用户选择 Cursor，必须创建或更新 `.cursor/rules/project.mdc`，不要创建 `.cursor/rules` 普通文件。
-- 工具入口文件只包含短指针，并直接要求读取 `AGENTS.md`、`PROJECT.md`、`USER_RULES.md`、`AI_IGNORE.md`。
-- 初始化代码仓库时，`AiCoder/prd/`、`AiCoder/task/`、`AiCoder/design/`、`AiCoder/db/` 四个空目录存在。
+- `AGENTS.md` 明确要求读取 `harness/PROJECT.md`、`harness/USER_RULES.md` 和 `harness/AI_IGNORE.md`。
+- `AGENTS.md` 包含“快速导航”表格，表头准确为“你想做什么”“去哪里看”，三个配套规则文件均有对应记录；本次在 `harness/` 下创建、迁移或发现漏记的文件均已逐文件登记，不限于 Markdown。
+- 导航用途可区分具体计划、批次或模块，链接指向真实文件并采用项目根目录相对路径；移动、重命名、删除或用途变化已同步，没有重复、占位或失效记录。
+- `AGENTS.md` 明确要求在 `harness/` 下每生成一个文件就同步登记导航，并在每次执行结束前核对变动文件与导航一致。
+- `AGENTS.md` 写明规则优先级：`harness/USER_RULES.md` > `harness/AI_IGNORE.md` > `harness/PROJECT.md` > `AGENTS.md` > `CLAUDE.md`。
+- 本次新生成的 Markdown 文档最开头具有可解析的 YAML 元信息，包含实际 `YYYY-MM-DD` 日期、合法状态（`active` / `deprecated` / `draft`）和真实负责人或 `unassigned`；头部未保留日期占位符或示例姓名，`@账号` 使用引号。
+- 文档正文修改后更新了实际日期，未因扫描或原样迁移刷新日期；已有用户维护文件未因缺少元信息被擅自改写。
+- `harness/PROJECT.md` 存在，且项目概述、核心技术栈、核心架构与目录规约、代码规范与常用命令、硬性规则（必须遵守）五个章节都不是空标题。
+- “核心技术栈”使用列表，写清技术、版本或声明范围、用途和技术红线，不附配置内容、配置路径或来源标注；版本仍经过项目文件核实，未知版本明确标为待确认。
+- “核心架构与目录规约”包含 `text` 代码块中的目录树，层级与实际项目一致，核心节点旁有职责或约束说明，未保留模板占位节点。
+- `harness/PROJECT.md` 的技术栈、命令、目录职责能追溯到真实文件；无法追溯的内容应写“待确认”。
+- `harness/PROJECT.md` 的源码事实没有来自 `harness/AI_IGNORE.md` 声明的忽略路径，除非用户明确要求并在摘要中说明原因。
+- `harness/PROJECT.md` 正文没有“本次新增”“旧规则已移除”“原来是”等更新过程痕迹。
+- “硬性规则（必须遵守）”使用列表，每条生效规则均明确适用范围、检测对象、可判定条件、检查方式和已有例外，不含待替换的模板占位符或仅有主观评价的通用禁令。
+- 规则中的阈值、版本、禁用符号和依赖边界来自项目既有约束或维护者明确要求；参考示例和代码常见写法未被直接当成强制要求，缺失条件已单独列为待确认。
+- 规模、覆盖率和版本限制写清度量口径与适用范围；检查命令真实存在且能够覆盖对应条件，没有自动检查的规则给出可重复的检查步骤，未虚称 CI 已强制执行。
+- 增量更新保留人工规则的范围、阈值和例外，未以机械化改写为由引入新的限制或覆盖人工修改。
+- `harness/USER_RULES.md` 存在；如果原文件已存在，哈希或内容不得被自动修改。
+- `harness/AI_IGNORE.md` 存在；如果原文件已存在，哈希或内容不得被自动修改。
+- 如有旧位置迁移，用户维护文件与迁移前内容一致，已有计划和设计资料没有被覆盖或丢失；无法确定归属的资料已列明。
+- `harness/AI_IGNORE.md` 中的匹配模式仍以项目根目录为基准。
+- 扫描忽略规则时没有把 YAML 元信息或说明正文当成路径模式。
+- Codex 入口 `AGENTS.md` 和 Claude Code 入口 `CLAUDE.md` 均存在；不因未选择工具而跳过任一入口。
+- `CLAUDE.md` 的元信息之后只包含短指针正文，并直接要求读取 `AGENTS.md`、`harness/PROJECT.md`、`harness/USER_RULES.md`、`harness/AI_IGNORE.md`。
+- `harness/plan/`、`harness/design/` 均存在；初始化时未创建示例计划或业务文件。
+- `AGENTS.md` 写明计划目录采用 `YYYYMMDD-<计划标识>`，日期取用户本地时区的计划创建日期；同日不同计划使用不同后缀，后续执行沿用原目录。
+- `AGENTS.md` 写明每个研发计划独立建目录，新建计划时编写 `需求.md` 描述本次任务的背景、目标、范围、约束和验收标准，每次执行前先读取；各次执行的任务 Markdown、数据库变更文件及其他文件归入对应计划，长期设计文档放在 `harness/design/`。
+- `AGENTS.md` 包含“需求完成进度跟踪”章节：新建计划时创建 `进度.md`，按需求编号关联任务和验收证据；执行前读取，阶段完成、验证、阻塞和执行结束或交接前更新，验收标准满足并验证通过后才标为已完成。
+- `AGENTS.md` 包含“提交规范”章节，内容为 `feat: 新功能`、`fix: 修复`、`refactor: 重构`、`docs: 文档`、`test: 测试`。
+- `AGENTS.md` 包含“文档元信息与有效性”章节：默认跳过废弃文档，草稿不作为确定依据；未设置有效期时不因日期较早就忽略有效文档，元信息缺失或格式错误列为待检查，并保留主入口、必读规则和用户点名文件的状态核对要求。
 
 如果任一检查失败，先修正再结束任务。
